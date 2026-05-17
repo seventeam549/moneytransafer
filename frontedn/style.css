@@ -1,0 +1,39 @@
+body{
+  background:#f3f7fc;
+  font-family:tahoma;
+}
+
+.hero-section{
+  padding:60px 0;
+}
+
+.transfer-card{
+  border:none;
+  border-radius:25px;
+}
+
+.form-control,
+.form-select{
+  height:55px;
+  border-radius:15px;
+}
+
+.btn-primary{
+  height:55px;
+  border-radius:15px;
+  font-size:18px;
+}
+
+.bank-box{
+  background:#eef4ff;
+  padding:20px;
+  border-radius:20px;
+}
+
+@media(max-width:768px){
+
+  .hero-section{
+    padding:20px;
+  }
+
+}
