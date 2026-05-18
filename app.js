@@ -1,4 +1,5 @@
-const countries = {
+consule.log("JS is working")
+  const countries = {
 
   Afghanistan:{
     provinces:["کابل","هرات","بلخ"],
