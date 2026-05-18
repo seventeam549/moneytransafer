@@ -1,4 +1,3 @@
-consule.log("JS is working")
   const countries = {
 
   Afghanistan:{
