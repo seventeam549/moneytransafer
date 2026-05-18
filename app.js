@@ -1,104 +1,114 @@
-<!DOCTYPE html>
-<html lang="fa" dir="rtl">
+document.addEventListener("DOMContentLoaded", () => {
 
-<head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>EXIRAN Transfer</title>
+  const countries = {
 
-  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
-  <link rel="stylesheet" href="style.css">
-</head>
+    Afghanistan:{
+      provinces:["کابل","هرات","بلخ"],
+      bank:{
+        title:"عزیزی بانک افغانستان",
+        number:"909090090009",
+        owner:"فرهاد احسان"
+      }
+    },
 
-<body>
+    Iran:{
+      provinces:["تهران","مشهد","اصفهان"],
+      bank:{
+        title:"بانک ملت ایران",
+        number:"908080909900009",
+        owner:"ذین العابدین"
+      }
+    },
 
-<!-- HEADER -->
-<nav class="navbar navbar-dark shadow-sm">
-  <div class="container">
-    <span class="navbar-brand fw-bold">
-      💳 EXIRAN MONEY TRANSFER
-    </span>
-  </div>
-</nav>
+    Turkey:{
+      provinces:["استانبول","انقره"],
+      bank:{
+        title:"بانک ترکیه",
+        number:"90809099",
+        owner:"علی رضا"
+      }
+    }
 
-<!-- LOGO -->
-<div class="text-center mt-4">
-  <img src="logo.png" class="logo-animation" width="120">
-</div>
+  };
 
-<!-- MAIN -->
-<section class="py-4">
-  <div class="container">
+  const fromCountry = document.getElementById("fromCountry");
+  const toCountry = document.getElementById("toCountry");
+  const province = document.getElementById("province");
+  const bankCard = document.getElementById("bankCard");
 
-    <div class="row justify-content-center">
-      <div class="col-lg-7 col-md-9">
+  const confirmPayment = document.getElementById("confirmPayment");
 
-        <div class="card shadow-lg transfer-card">
+  // ❗ پر کردن هر دو dropdown (خیلی مهم)
+  function loadCountries(){
 
-          <div class="card-body p-4">
+    fromCountry.innerHTML = `<option value="">کشور مبدا</option>`;
+    toCountry.innerHTML = `<option value="">کشور مقصد</option>`;
 
-            <h4 class="text-center mb-4">سیستم انتقال پول بین‌المللی</h4>
+    Object.keys(countries).forEach(country => {
 
-            <!-- FORM -->
-            <input id="senderName" class="form-control mb-2" placeholder="نام ارسال‌کننده">
-            <input id="receiverName" class="form-control mb-3" placeholder="نام دریافت‌کننده">
+      fromCountry.innerHTML += `<option value="${country}">${country}</option>`;
+      toCountry.innerHTML += `<option value="${country}">${country}</option>`;
 
-            <div class="row g-2">
-              <div class="col-md-6">
-                <select id="fromCountry" class="form-select"></select>
-              </div>
+    });
 
-              <div class="col-md-6">
-                <select id="toCountry" class="form-select"></select>
-              </div>
-            </div>
+  }
 
-            <select id="province" class="form-select mt-2"></select>
+  loadCountries();
 
-            <input id="phone" class="form-control mt-2" placeholder="شماره تماس">
+  // ❗ نمایش ولایت + بانک
+  toCountry.addEventListener("change", () => {
 
-            <!-- BANK CARD -->
-            <div id="bankCard" class="mt-4"></div>
+    province.innerHTML = "";
 
-            <!-- CONFIRM -->
-            <div class="form-check mt-3">
-              <input class="form-check-input" type="checkbox" id="confirmPayment">
-              <label class="form-check-label">
-                تایید پرداخت به حساب صرافی EXIRAN
-              </label>
-            </div>
+    const c = countries[toCountry.value];
+    if(!c) return;
 
-            <!-- UPLOAD -->
-            <div id="uploadBox" class="d-none mt-3">
-              <input type="file" id="receipt" class="form-control">
-            </div>
+    c.provinces.forEach(p => {
+      province.innerHTML += `<option>${p}</option>`;
+    });
 
-            <!-- BUTTON -->
-            <button id="submitBtn" class="btn btn-primary w-100 mt-4" disabled>
-              ثبت حواله
-            </button>
+    bankCard.innerHTML = `
+      <div class="bank-real-card">
 
-            <!-- LOADING -->
-            <div id="loadingOverlay" class="d-none">
-              <div class="loader-box">
-                <img src="loading.gif" width="110">
-                <p class="mt-2">در حال پردازش...</p>
-              </div>
-            </div>
+        <div class="bank-name">
+          ${c.bank.title}
+        </div>
 
-            <!-- RESULT -->
-            <div id="successBox" class="alert alert-success mt-3 d-none"></div>
+        <div class="bank-number">
+          ${c.bank.number}
+        </div>
 
-          </div>
+        <div class="bank-owner">
+          ${c.bank.owner}
+        </div>
+
+        <div class="bank-country">
+          ${toCountry.value}
         </div>
 
       </div>
-    </div>
 
-  </div>
-</section>
+      <div class="alert alert-info mt-3">
+        لطفاً مبلغ را به حساب بالا واریز نموده و سپس رسید را آپلود کنید.
+      </div>
+    `;
 
-<script src="./app.js"></script>
-</body>
+  });
 
-</html>
+  // ❗ فعال شدن آپلود بعد از تیک
+  confirmPayment.addEventListener("change", () => {
+
+    const uploadBox = document.getElementById("uploadBox");
+    const submitBtn = document.getElementById("submitBtn");
+
+    if(confirmPayment.checked){
+      uploadBox.classList.remove("d-none");
+      submitBtn.disabled = false;
+    } else {
+      uploadBox.classList.add("d-none");
+      submitBtn.disabled = true;
+    }
+
+  });
+
+});
