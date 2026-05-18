@@ -1,66 +1,53 @@
 const countries = {
-  Iran: {
+
+  Afghanistan:{
+    provinces:["کابل","هرات","بلخ"],
+
+    bank:{
+      title:"عزیزی بانک افغانستان",
+      number:"909090090009",
+      owner:"فرهاد احسان"
+    }
+  },
+
+  Iran:{
     provinces:["تهران","مشهد","اصفهان"],
-    account:{
-      number:"0101010101",
-      name:"ذین العابدین"
+
+    bank:{
+      title:"بانک ملت ایران",
+      number:"908080909900009",
+      owner:"ذین العابدین"
     }
   },
 
-  Germany: {
-    provinces:["Berlin","Hamburg","Bayern"],
-    account:{
-      number:"4455667788",
-      name:"Hans Muller"
-    }
-  },
+  Turkey:{
+    provinces:["استانبول","انقره"],
 
-  Turkey: {
-    provinces:["Istanbul","Ankara"],
-    account:{
-      number:"9988776655",
-      name:"Ahmet"
+    bank:{
+      title:"بانک ترکیه",
+      number:"90809099",
+      owner:"علی رضا"
     }
   }
+
 };
 
-const fromCountry = document.getElementById("fromCountry");
-const toCountry = document.getElementById("toCountry");
-const province = document.getElementById("province");
-const accountInfo = document.getElementById("accountInfo");
+const toCountry =
+  document.getElementById("toCountry");
 
-fromCountry.innerHTML = `<option value="">کشور مبدا</option>`;
-toCountry.innerHTML = `<option value="">کشور مقصد</option>`;
+const province =
+  document.getElementById("province");
+
+const bankCard =
+  document.getElementById("bankCard");
 
 Object.keys(countries).forEach(country=>{
 
-  fromCountry.innerHTML += `
+  toCountry.innerHTML += 
     <option value="${country}">
       ${country}
     </option>
-  `;
-
-  toCountry.innerHTML += `
-    <option value="${country}">
-      ${country}
-    </option>
-  `;
-
-});
-
-fromCountry.addEventListener("change",()=>{
-
-  const c = countries[fromCountry.value];
-
-  if(!c){
-    accountInfo.innerHTML = "کشور انتخاب نشده";
-    return;
-  }
-
-  accountInfo.innerHTML = `
-    <p>شماره حساب: <b>${c.account.number}</b></p>
-    <p>نام حساب: <b>${c.account.name}</b></p>
-  `;
+  ;
 
 });
 
@@ -68,58 +55,151 @@ toCountry.addEventListener("change",()=>{
 
   province.innerHTML = "";
 
-  countries[toCountry.value].provinces.forEach(p=>{
+  const c = countries[toCountry.value];
 
-    province.innerHTML += `
+  c.provinces.forEach(p=>{
+
+    province.innerHTML += 
       <option>${p}</option>
-    `;
+    ;
 
   });
+
+  bankCard.innerHTML = 
+
+  <div class="bank-real-card">
+
+    <div class="bank-name">
+      ${c.bank.title}
+    </div>
+
+    <div class="bank-number">
+      ${c.bank.number}
+    </div>
+
+    <div class="bank-owner">
+      ${c.bank.owner}
+    </div>
+
+    <div class="bank-country">
+      ${toCountry.value}
+    </div>
+
+  </div>
+
+  <div class="alert alert-info mt-3">
+
+  لطفاً مبلغ مورد نظر را به حساب فوق واریز نموده
+  و سپس رسید پرداخت را آپلود نمایید.
+
+  </div>
+
+  ;
+
+});
+
+const confirmPayment =
+  document.getElementById("confirmPayment");
+
+confirmPayment.addEventListener("change",()=>{
+
+  const uploadBox =
+    document.getElementById("uploadBox");
+
+  const submitBtn =
+    document.getElementById("submitBtn");
+
+  if(confirmPayment.checked){
+
+    uploadBox.classList.remove("d-none");
+
+    submitBtn.disabled = false;
+
+  }else{
+
+    uploadBox.classList.add("d-none");
+
+    submitBtn.disabled = true;
+
+  }
 
 });
 
 async function submitForm(){
 
-  const loading = document.getElementById("loading");
-  const successBox = document.getElementById("successBox");
+  document.getElementById("loadingOverlay")
+    .classList.remove("d-none");
 
-  loading.classList.remove("d-none");
+  const file =
+    document.getElementById("receipt").files[0];
 
-  const formData = new FormData();
+  const reader = new FileReader();
 
-  formData.append("senderName", document.getElementById("senderName").value);
-  formData.append("receiverName", document.getElementById("receiverName").value);
-  formData.append("fromCountry", fromCountry.value);
-  formData.append("toCountry", toCountry.value);
-  formData.append("province", province.value);
-  formData.append("phone", document.getElementById("phone").value);
-  formData.append("receipt", document.getElementById("receipt").files[0]);
+  reader.readAsDataURL(file);
 
-  try{
+  reader.onload = async ()=>{
 
-    const response = await fetch("http://localhost:3000/api/transfer",{
-      method:"POST",
-      body:formData
-    });
+    const base64 =
+      reader.result.split(",")[1];
+
+    const body = {
+
+      senderName:
+        document.getElementById("senderName").value,
+
+      receiverName:
+        document.getElementById("receiverName").value,
+
+      fromCountry:
+        document.getElementById("fromCountry").value,
+
+      toCountry:
+        toCountry.value,
+
+      province:
+        province.value,
+
+      phone:
+        document.getElementById("phone").value,
+
+      fileName:file.name,
+
+      base64
+    };
+
+    const response = await fetch(
+      "YOUR_GOOGLE_SCRIPT_URL",
+      {
+        method:"POST",
+        body:JSON.stringify(body)
+      }
+    );
 
     const data = await response.json();
 
-    loading.classList.add("d-none");
+    document.getElementById("loadingOverlay")
+      .classList.add("d-none");
 
-    successBox.classList.remove("d-none");
+    document.getElementById("successBox")
+      .classList.remove("d-none");
 
-    successBox.innerHTML = `
-      درخواست ثبت شد ✅
-      <br>
-      کد پیگیری: ${data.trackingCode}
-    `;
+    document.getElementById("successBox")
+      .innerHTML = 
 
-  }catch(err){
+      درخواست موفقانه ثبت شد ✅
 
-    loading.classList.add("d-none");
+      <hr>
 
-    alert("خطا در ارتباط با سرور");
+      کد رهگیری:
+      <b>${data.trackingCode}</b>
 
-  }
+      <br><br>
+
+      نمبر حواله:
+      <b>${data.transferCode}</b>
+
+      ;
+
+  };
 
 }
