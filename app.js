@@ -1,34 +1,9 @@
 document.addEventListener("DOMContentLoaded", () => {
 
   const countries = {
-
-    Afghanistan:{
-      provinces:["کابل","هرات","بلخ"],
-      bank:{
-        title:"عزیزی بانک افغانستان",
-        number:"909090090009",
-        owner:"فرهاد احسان"
-      }
-    },
-
-    Iran:{
-      provinces:["تهران","مشهد","اصفهان"],
-      bank:{
-        title:"بانک ملت ایران",
-        number:"908080909900009",
-        owner:"ذین العابدین"
-      }
-    },
-
-    Turkey:{
-      provinces:["استانبول","انقره"],
-      bank:{
-        title:"بانک ترکیه",
-        number:"90809099",
-        owner:"علی رضا"
-      }
-    }
-
+    Afghanistan: ["کابل", "هرات", "بلخ"],
+    Iran: ["تهران", "مشهد", "اصفهان"],
+    Turkey: ["استانبول", "انقره"]
   };
 
   const fromCountry = document.getElementById("fromCountry");
@@ -36,77 +11,43 @@ document.addEventListener("DOMContentLoaded", () => {
   const province = document.getElementById("province");
   const bankCard = document.getElementById("bankCard");
 
-  const confirmPayment = document.getElementById("confirmPayment");
-
-  // ❗ پر کردن هر دو dropdown (خیلی مهم)
-  function loadCountries(){
-
-    fromCountry.innerHTML = `<option value="">کشور مبدا</option>`;
-    toCountry.innerHTML = `<option value="">کشور مقصد</option>`;
-
-    Object.keys(countries).forEach(country => {
-
-      fromCountry.innerHTML += `<option value="${country}">${country}</option>`;
-      toCountry.innerHTML += `<option value="${country}">${country}</option>`;
-
-    });
-
+  // ❗ اگر یکی از این‌ها نبود → stop کن
+  if (!fromCountry || !toCountry || !province) {
+    console.log("ERROR: missing HTML elements");
+    return;
   }
 
-  loadCountries();
+  // پر کردن dropdown ها
+  Object.keys(countries).forEach(c => {
 
-  // ❗ نمایش ولایت + بانک
+    fromCountry.innerHTML += `<option value="${c}">${c}</option>`;
+    toCountry.innerHTML += `<option value="${c}">${c}</option>`;
+
+  });
+
+  // تغییر کشور مقصد
   toCountry.addEventListener("change", () => {
 
     province.innerHTML = "";
 
-    const c = countries[toCountry.value];
-    if(!c) return;
+    const list = countries[toCountry.value];
+    if (!list) return;
 
-    c.provinces.forEach(p => {
+    list.forEach(p => {
       province.innerHTML += `<option>${p}</option>`;
     });
 
-    bankCard.innerHTML = `
-      <div class="bank-real-card">
-
-        <div class="bank-name">
-          ${c.bank.title}
+    if (bankCard) {
+      bankCard.innerHTML = `
+        <div class="bank-real-card">
+          <div class="bank-name">${toCountry.value}</div>
         </div>
-
-        <div class="bank-number">
-          ${c.bank.number}
-        </div>
-
-        <div class="bank-owner">
-          ${c.bank.owner}
-        </div>
-
-        <div class="bank-country">
-          ${toCountry.value}
-        </div>
-
-      </div>
-
-      <div class="alert alert-info mt-3">
-        لطفاً مبلغ را به حساب بالا واریز نموده و سپس رسید را آپلود کنید.
-      </div>
-    `;
+      `;
+    }
 
   });
 
-  // ❗ فعال شدن آپلود بعد از تیک
-  confirmPayment.addEventListener("change", () => {
-
-    const uploadBox = document.getElementById("uploadBox");
-    const submitBtn = document.getElementById("submitBtn");
-
-    if(confirmPayment.checked){
-      uploadBox.classList.remove("d-none");
-      submitBtn.disabled = false;
-    } else {
-      uploadBox.classList.add("d-none");
-      submitBtn.disabled = true;
+});      submitBtn.disabled = true;
     }
 
   });
