@@ -19,7 +19,63 @@
     </span>
   </div>
 </nav>
+<div id="bankCard" class="mt-4"></div>
 
+<div class="form-check mt-4">
+
+  <input
+    class="form-check-input"
+    type="checkbox"
+    id="confirmPayment"
+  >
+
+  <label class="form-check-label">
+
+  آیا مبلغ را به حساب صرافی EXIRAN واریز نموده اید؟
+
+  </label>
+
+</div>
+
+<div id="uploadBox" class="d-none mt-4">
+
+  <label class="form-label">
+    آپلود رسید بانکی
+  </label>
+
+  <input
+    type="file"
+    id="receipt"
+    class="form-control"
+  >
+
+</div>
+
+<button
+  id="submitBtn"
+  disabled
+  class="btn btn-primary w-100 mt-4"
+  onclick="submitForm()"
+>
+ثبت حواله
+</button>
+
+<div id="loadingOverlay" class="d-none">
+
+  <div class="loader-box">
+
+    <img
+      src="loading.gif"
+      width="120"
+    >
+
+    <p class="mt-3">
+      در حال ثبت اطلاعات...
+    </p>
+
+  </div>
+
+</div>
 <section class="hero-section">
   <div class="container">
 
