@@ -1,10 +1,10 @@
 body{
-  background:#f3f7fc;
+  background:#eef3f9;
   font-family:tahoma;
 }
 
-.hero-section{
-  padding:60px 0;
+.navbar{
+  background:#052b5b !important;
 }
 
 .transfer-card{
@@ -12,28 +12,84 @@ body{
   border-radius:25px;
 }
 
-.form-control,
-.form-select{
-  height:55px;
-  border-radius:15px;
-}
+.bank-real-card{
 
-.btn-primary{
-  height:55px;
-  border-radius:15px;
-  font-size:18px;
-}
+  background:linear-gradient(
+    135deg,
+    #003973,
+    #0056b3
+  );
 
-.bank-box{
-  background:#eef4ff;
-  padding:20px;
+  color:white;
+
+  padding:30px;
+
   border-radius:20px;
+
+  box-shadow:0 10px 25px rgba(0,0,0,.2);
+
 }
 
-@media(max-width:768px){
+.bank-name{
+  font-size:22px;
+  font-weight:bold;
+}
 
-  .hero-section{
-    padding:20px;
+.bank-number{
+  margin-top:30px;
+  font-size:28px;
+  letter-spacing:3px;
+}
+
+.bank-owner{
+  margin-top:20px;
+}
+
+.bank-country{
+  margin-top:10px;
+  opacity:.8;
+}
+
+#loadingOverlay{
+
+  position:fixed;
+  inset:0;
+
+  background:rgba(255,255,255,.9);
+
+  z-index:9999;
+
+  display:flex;
+  justify-content:center;
+  align-items:center;
+
+}
+
+.loader-box{
+  text-align:center;
+}
+
+.logo-animation{
+
+  animation:zoomLogo 2s infinite;
+
+}
+
+@keyframes zoomLogo{
+
+  0%{
+    transform:scale(.9);
+    opacity:.5;
+  }
+
+  50%{
+    transform:scale(1.1);
+    opacity:1;
+  }
+
+  100%{
+    transform:scale(.9);
+    opacity:.5;
   }
 
 }
