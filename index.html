@@ -1,59 +1,96 @@
+<!DOCTYPE html>
+<html lang="fa" dir="rtl">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>EXIRAN Transfer</title>
+
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+  <link rel="stylesheet" href="style.css">
+</head>
+
 <body>
 
-<div class="text-center mt-4">
-  <img src="logo.png" width="130" class="logo-animation">
-</div>
-
-<nav class="navbar navbar-dark bg-dark shadow-sm">
+<!-- HEADER -->
+<nav class="navbar navbar-dark shadow-sm">
   <div class="container">
-    <span class="navbar-brand">
-      Money Transfer Pro
+    <span class="navbar-brand fw-bold">
+      💳 EXIRAN MONEY TRANSFER
     </span>
   </div>
 </nav>
 
-<section class="hero-section">
+<!-- LOGO -->
+<div class="text-center mt-4">
+  <img src="logo.png" class="logo-animation" width="120">
+</div>
+
+<!-- MAIN -->
+<section class="py-4">
   <div class="container">
 
-    <div class="card transfer-card shadow-lg">
-      <div class="card-body p-4">
+    <div class="row justify-content-center">
+      <div class="col-lg-7 col-md-9">
 
-        <h2 class="text-center mb-4">سیستم انتقال پول</h2>
+        <div class="card shadow-lg transfer-card">
 
-        <input id="senderName" class="form-control mb-2" placeholder="اسم ارسال کننده">
-        <input id="receiverName" class="form-control mb-2" placeholder="اسم دریافت کننده">
+          <div class="card-body p-4">
 
-        <select id="fromCountry" class="form-select mb-2"></select>
-        <select id="toCountry" class="form-select mb-2"></select>
-        <select id="province" class="form-select mb-2"></select>
+            <h4 class="text-center mb-4">سیستم انتقال پول بین‌المللی</h4>
 
-        <input id="phone" class="form-control mb-3" placeholder="شماره تماس">
+            <!-- FORM -->
+            <input id="senderName" class="form-control mb-2" placeholder="نام ارسال‌کننده">
+            <input id="receiverName" class="form-control mb-3" placeholder="نام دریافت‌کننده">
 
-        <div id="bankCard" class="mb-3"></div>
+            <div class="row g-2">
+              <div class="col-md-6">
+                <select id="fromCountry" class="form-select"></select>
+              </div>
 
-        <div class="form-check mb-3">
-          <input type="checkbox" id="confirmPayment" class="form-check-input">
-          <label class="form-check-label">
-            آیا پرداخت انجام شده؟
-          </label>
-        </div>
+              <div class="col-md-6">
+                <select id="toCountry" class="form-select"></select>
+              </div>
+            </div>
 
-        <div id="uploadBox" class="d-none mb-3">
-          <input type="file" id="receipt" class="form-control">
-        </div>
+            <select id="province" class="form-select mt-2"></select>
 
-        <button id="submitBtn" class="btn btn-primary w-100" disabled>
-          ثبت حواله
-        </button>
+            <input id="phone" class="form-control mt-2" placeholder="شماره تماس">
 
-        <div id="loadingOverlay" class="d-none">
-          <div class="loader-box">
-            <img src="loading.gif" width="120">
-            <p>در حال ثبت...</p>
+            <!-- BANK CARD -->
+            <div id="bankCard" class="mt-4"></div>
+
+            <!-- CONFIRM -->
+            <div class="form-check mt-3">
+              <input class="form-check-input" type="checkbox" id="confirmPayment">
+              <label class="form-check-label">
+                تایید پرداخت به حساب صرافی EXIRAN
+              </label>
+            </div>
+
+            <!-- UPLOAD -->
+            <div id="uploadBox" class="d-none mt-3">
+              <input type="file" id="receipt" class="form-control">
+            </div>
+
+            <!-- BUTTON -->
+            <button id="submitBtn" class="btn btn-primary w-100 mt-4" disabled>
+              ثبت حواله
+            </button>
+
+            <!-- LOADING -->
+            <div id="loadingOverlay" class="d-none">
+              <div class="loader-box">
+                <img src="loading.gif" width="110">
+                <p class="mt-2">در حال پردازش...</p>
+              </div>
+            </div>
+
+            <!-- RESULT -->
+            <div id="successBox" class="alert alert-success mt-3 d-none"></div>
+
           </div>
         </div>
-
-        <div id="successBox" class="alert alert-success mt-3 d-none"></div>
 
       </div>
     </div>
@@ -63,3 +100,5 @@
 
 <script src="./app.js"></script>
 </body>
+
+</html>
