@@ -1,9 +1,34 @@
 document.addEventListener("DOMContentLoaded", () => {
 
   const countries = {
-    Afghanistan: ["کابل", "هرات", "بلخ"],
-    Iran: ["تهران", "مشهد", "اصفهان"],
-    Turkey: ["استانبول", "انقره"]
+
+    Afghanistan:{
+      provinces:["کابل","هرات","بلخ"],
+      bank:{
+        title:"عزیزی بانک افغانستان",
+        number:"909090090009",
+        owner:"فرهاد احسان"
+      }
+    },
+
+    Iran:{
+      provinces:["تهران","مشهد","اصفهان"],
+      bank:{
+        title:"بانک ملت ایران",
+        number:"908080909900009",
+        owner:"ذین العابدین"
+      }
+    },
+
+    Turkey:{
+      provinces:["استانبول","انقره"],
+      bank:{
+        title:"بانک ترکیه",
+        number:"90809099",
+        owner:"علی رضا"
+      }
+    }
+
   };
 
   const fromCountry = document.getElementById("fromCountry");
@@ -11,96 +36,79 @@ document.addEventListener("DOMContentLoaded", () => {
   const province = document.getElementById("province");
   const bankCard = document.getElementById("bankCard");
 
-  // ❗ اگر یکی از این‌ها نبود → stop کن
-  if (!fromCountry || !toCountry || !province) {
-    console.log("ERROR: missing HTML elements");
-    return;
+  const confirmPayment = document.getElementById("confirmPayment");
+
+  // ❗ پر کردن هر دو dropdown (خیلی مهم)
+  function loadCountries(){
+
+    fromCountry.innerHTML = `<option value="">کشور مبدا</option>`;
+    toCountry.innerHTML = `<option value="">کشور مقصد</option>`;
+
+    Object.keys(countries).forEach(country => {
+
+      fromCountry.innerHTML += `<option value="${country}">${country}</option>`;
+      toCountry.innerHTML += `<option value="${country}">${country}</option>`;
+
+    });
+
   }
 
-  // پر کردن dropdown ها
-  Object.keys(countries).forEach(c => {
+  loadCountries();
 
-    fromCountry.innerHTML += `<option value="${c}">${c}</option>`;
-    toCountry.innerHTML += `<option value="${c}">${c}</option>`;
-
-  });
-
-  // تغییر کشور مقصد
+  // ❗ نمایش ولایت + بانک
   toCountry.addEventListener("change", () => {
 
     province.innerHTML = "";
 
-    const list = countries[toCountry.value];
-    if (!list) return;
+    const c = countries[toCountry.value];
+    if(!c) return;
 
-    list.forEach(p => {
+    c.provinces.forEach(p => {
       province.innerHTML += `<option>${p}</option>`;
     });
 
-    if (bankCard) {
-      bankCard.innerHTML = `
-        <div class="bank-real-card">
-          <div class="bank-name">${toCountry.value}</div>
+    bankCard.innerHTML = `
+      <div class="bank-real-card">
+
+        <div class="bank-name">
+          ${c.bank.title}
         </div>
-      `;
-    }
 
-  });
+        <div class="bank-number">
+          ${c.bank.number}
+        </div>
 
-});      submitBtn.disabled = true;
-    }
+        <div class="bank-owner">
+          ${c.bank.owner}
+        </div>
 
-  });
+        <div class="bank-country">
+          ${toCountry.value}
+        </div>
 
-});    .classList.remove("d-none");
+      </div>
 
-  const file = document.getElementById("receipt").files[0];
-
-  const reader = new FileReader();
-
-  reader.readAsDataURL(file);
-
-  reader.onload = async () => {
-
-    const base64 = reader.result.split(",")[1];
-
-    const body = {
-
-      senderName: document.getElementById("senderName").value,
-      receiverName: document.getElementById("receiverName").value,
-      fromCountry: document.getElementById("fromCountry").value,
-      toCountry: toCountry.value,
-      province: province.value,
-      phone: document.getElementById("phone").value,
-      fileName: file.name,
-      base64
-
-    };
-
-    const response = await fetch(
-      "YOUR_GOOGLE_SCRIPT_URL",
-      {
-        method: "POST",
-        body: JSON.stringify(body)
-      }
-    );
-
-    const data = await response.json();
-
-    document.getElementById("loadingOverlay")
-      .classList.add("d-none");
-
-    document.getElementById("successBox")
-      .classList.remove("d-none");
-
-    document.getElementById("successBox").innerHTML = `
-      درخواست موفقانه ثبت شد ✅
-      <hr>
-      کد رهگیری: <b>${data.trackingCode}</b>
-      <br><br>
-      نمبر حواله: <b>${data.transferCode}</b>
+      <div class="alert alert-info mt-3">
+        لطفاً مبلغ را به حساب بالا واریز نموده و سپس رسید را آپلود کنید.
+      </div>
     `;
 
-  };
+  });
 
-}
+  // ❗ فعال شدن آپلود بعد از تیک
+  confirmPayment.addEventListener("change", () => {
+
+    const uploadBox = document.getElementById("uploadBox");
+    const submitBtn = document.getElementById("submitBtn");
+
+    if(confirmPayment.checked){
+      uploadBox.classList.remove("d-none");
+      submitBtn.disabled = false;
+    } else {
+      uploadBox.classList.add("d-none");
+      submitBtn.disabled = true;
+    }
+
+  });
+
+});
