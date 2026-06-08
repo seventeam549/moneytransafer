@@ -1,0 +1,595 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>FINOVIX - Money Transfer & Exchange Platform</title>
+    <link rel="stylesheet" href="styles.css">
+    <link rel="icon" href="assets/favicon.ico">
+</head>
+<body>
+    <div id="app"></div>
+    
+    <!-- Authentication Modal -->
+    <div id="authModal" class="modal active">
+        <div class="modal-content auth-container">
+            <div class="auth-tabs">
+                <button class="tab-btn active" data-tab="login">Login</button>
+                <button class="tab-btn" data-tab="register">Register</button>
+            </div>
+
+            <!-- Login Form -->
+            <form id="loginForm" class="tab-content active">
+                <h2>Welcome to FINOVIX</h2>
+                <div class="form-group">
+                    <label>Email or Mobile Number</label>
+                    <input type="text" id="loginEmail" placeholder="Enter email or mobile" required>
+                </div>
+                <div class="form-group">
+                    <label>Password</label>
+                    <input type="password" id="loginPassword" placeholder="Enter password" required>
+                </div>
+                <button type="submit" class="btn btn-primary">Login</button>
+                <p class="form-text">Don't have an account? <a href="#" class="tab-link" data-tab="register">Register here</a></p>
+            </form>
+
+            <!-- Registration Form -->
+            <form id="registerForm" class="tab-content">
+                <h2>Create Account</h2>
+                <div class="form-row">
+                    <div class="form-group">
+                        <label>First Name</label>
+                        <input type="text" id="regFirstName" placeholder="First name" required>
+                    </div>
+                    <div class="form-group">
+                        <label>Last Name</label>
+                        <input type="text" id="regLastName" placeholder="Last name" required>
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label>Email Address</label>
+                    <input type="email" id="regEmail" placeholder="your@email.com" required>
+                </div>
+                <div class="form-group">
+                    <label>Mobile Number</label>
+                    <input type="tel" id="regMobile" placeholder="+1 (555) 000-0000" required>
+                </div>
+                <div class="form-group">
+                    <label>Password</label>
+                    <input type="password" id="regPassword" placeholder="Create password" required>
+                </div>
+                <div class="form-group">
+                    <label>Confirm Password</label>
+                    <input type="password" id="regConfirmPassword" placeholder="Confirm password" required>
+                </div>
+                <button type="submit" class="btn btn-primary">Create Account</button>
+                <p class="form-text">Already have an account? <a href="#" class="tab-link" data-tab="login">Login here</a></p>
+            </form>
+        </div>
+    </div>
+
+    <!-- Main App (Hidden until authenticated) -->
+    <div id="mainApp" class="app-container hidden">
+        <!-- Header Navigation -->
+        <header class="header">
+            <div class="header-content">
+                <div class="logo">
+                    <h1>FINOVIX</h1>
+                </div>
+                <nav class="nav-menu">
+                    <button class="nav-item" data-page="dashboard">Dashboard</button>
+                    <button class="nav-item" data-page="transfer">Transfer</button>
+                    <button class="nav-item" data-page="deposit">Deposit</button>
+                    <button class="nav-item" data-page="withdraw">Withdraw</button>
+                    <button class="nav-item" data-page="converter">Converter</button>
+                    <button class="nav-item" data-page="profile">Profile</button>
+                    <button class="nav-item" data-page="admin" id="adminBtn" style="display: none;">Admin</button>
+                </nav>
+                <div class="theme-toggle">
+                    <button id="themeToggle" class="theme-btn">🌙</button>
+                    <button id="logoutBtn" class="btn btn-logout">Logout</button>
+                </div>
+            </div>
+        </header>
+
+        <!-- Sidebar -->
+        <aside class="sidebar">
+            <div class="sidebar-content">
+                <div class="user-card">
+                    <div class="user-avatar">👤</div>
+                    <div class="user-info">
+                        <p id="sidebarUserName" class="user-name">User</p>
+                        <p id="sidebarAccountNumber" class="account-number">FX-0000000000</p>
+                    </div>
+                </div>
+                <nav class="sidebar-nav">
+                    <a href="#" class="nav-link active" data-page="dashboard">
+                        <span class="icon">📊</span>
+                        <span>Dashboard</span>
+                    </a>
+                    <a href="#" class="nav-link" data-page="transfer">
+                        <span class="icon">💸</span>
+                        <span>Send Money</span>
+                    </a>
+                    <a href="#" class="nav-link" data-page="deposit">
+                        <span class="icon">📥</span>
+                        <span>Deposit</span>
+                    </a>
+                    <a href="#" class="nav-link" data-page="withdraw">
+                        <span class="icon">📤</span>
+                        <span>Withdraw</span>
+                    </a>
+                    <a href="#" class="nav-link" data-page="converter">
+                        <span class="icon">💱</span>
+                        <span>Exchange Rates</span>
+                    </a>
+                    <a href="#" class="nav-link" data-page="profile">
+                        <span class="icon">👤</span>
+                        <span>Profile</span>
+                    </a>
+                    <a href="#" class="nav-link" data-page="admin" id="adminLink" style="display: none;">
+                        <span class="icon">⚙️</span>
+                        <span>Admin Panel</span>
+                    </a>
+                </nav>
+            </div>
+        </aside>
+
+        <!-- Main Content -->
+        <main class="main-content">
+            <!-- Dashboard Page -->
+            <div id="dashboardPage" class="page active">
+                <div class="page-header">
+                    <h1>Dashboard</h1>
+                    <p>Welcome back, <span id="dashUserName">User</span>!</p>
+                </div>
+
+                <div class="dashboard-grid">
+                    <!-- Balance Card -->
+                    <div class="card balance-card">
+                        <h3>Available Balance</h3>
+                        <div class="balance-display">
+                            <h2 id="balanceAmount">$0.00</h2>
+                            <p>USD</p>
+                        </div>
+                        <p class="account-id">Account: <span id="dashAccountNumber">FX-0000000000</span></p>
+                    </div>
+
+                    <!-- Quick Actions -->
+                    <div class="card quick-actions">
+                        <h3>Quick Actions</h3>
+                        <div class="action-buttons">
+                            <button class="action-btn" data-page="transfer">
+                                <span>💸</span>
+                                <span>Send Money</span>
+                            </button>
+                            <button class="action-btn" data-page="deposit">
+                                <span>📥</span>
+                                <span>Deposit</span>
+                            </button>
+                            <button class="action-btn" data-page="withdraw">
+                                <span>📤</span>
+                                <span>Withdraw</span>
+                            </button>
+                        </div>
+                    </div>
+
+                    <!-- Requests Summary -->
+                    <div class="card requests-summary">
+                        <h3>Request Status</h3>
+                        <div class="request-item">
+                            <span>Pending Transfers</span>
+                            <span class="badge" id="pendingTransfers">0</span>
+                        </div>
+                        <div class="request-item">
+                            <span>Pending Deposits</span>
+                            <span class="badge" id="pendingDeposits">0</span>
+                        </div>
+                        <div class="request-item">
+                            <span>Pending Withdrawals</span>
+                            <span class="badge" id="pendingWithdrawals">0</span>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Recent Transactions -->
+                <div class="card transactions-card">
+                    <h3>Recent Transactions</h3>
+                    <div id="recentTransactions" class="transactions-list">
+                        <p class="empty-state">No transactions yet</p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Transfer Page -->
+            <div id="transferPage" class="page">
+                <div class="page-header">
+                    <h1>Send Money</h1>
+                    <p>Transfer money to recipients in Afghanistan or Pakistan</p>
+                </div>
+
+                <div class="card form-card">
+                    <form id="transferForm">
+                        <div class="form-row">
+                            <div class="form-group">
+                                <label>Destination Country</label>
+                                <select id="destCountry" required>
+                                    <option value="">Select country</option>
+                                    <option value="afghanistan">Afghanistan</option>
+                                    <option value="pakistan">Pakistan</option>
+                                </select>
+                            </div>
+                            <div class="form-group">
+                                <label>Destination City</label>
+                                <select id="destCity" required>
+                                    <option value="">Select city</option>
+                                </select>
+                            </div>
+                        </div>
+
+                        <div class="form-row">
+                            <div class="form-group">
+                                <label>Recipient Full Name</label>
+                                <input type="text" id="recipientName" placeholder="Full name" required>
+                            </div>
+                            <div class="form-group">
+                                <label>Recipient Mobile Number</label>
+                                <input type="tel" id="recipientMobile" placeholder="Mobile number" required>
+                            </div>
+                        </div>
+
+                        <div class="form-row">
+                            <div class="form-group">
+                                <label>Transfer Amount (USD)</label>
+                                <input type="number" id="transferAmount" placeholder="0.00" min="1" step="0.01" required>
+                            </div>
+                            <div class="form-group">
+                                <label>Exchange Office</label>
+                                <select id="exchangeOffice" required>
+                                    <option value="">Select exchange office</option>
+                                </select>
+                            </div>
+                        </div>
+
+                        <div class="card calculation-card">
+                            <h3>Transfer Calculation</h3>
+                            <div class="calc-row">
+                                <span>Exchange Rate</span>
+                                <span id="exchangeRateDisplay">-</span>
+                            </div>
+                            <div class="calc-row">
+                                <span>Sending Amount</span>
+                                <span id="sendingAmountDisplay">$0.00</span>
+                            </div>
+                            <div class="calc-row">
+                                <span>Service Fee</span>
+                                <span id="feeDisplay">$0.00</span>
+                            </div>
+                            <div class="calc-row total">
+                                <span>Total Payable</span>
+                                <span id="totalPayableDisplay">$0.00</span>
+                            </div>
+                            <div class="calc-row highlight">
+                                <span>Recipient Receives</span>
+                                <span id="recipientReceivesDisplay">-</span>
+                            </div>
+                        </div>
+
+                        <button type="submit" class="btn btn-primary btn-large">Submit Transfer</button>
+                    </form>
+                </div>
+            </div>
+
+            <!-- Deposit Page -->
+            <div id="depositPage" class="page">
+                <div class="page-header">
+                    <h1>Deposit Funds</h1>
+                    <p>Add funds to your FINOVIX account</p>
+                </div>
+
+                <div class="card">
+                    <h3>Bank Transfer Details</h3>
+                    <div id="bankInfo" class="bank-info">
+                        <p class="empty-state">Loading bank information...</p>
+                    </div>
+                </div>
+
+                <div class="card form-card">
+                    <h3>Deposit Request</h3>
+                    <form id="depositForm">
+                        <div class="form-group">
+                            <label>Deposit Amount (USD)</label>
+                            <input type="number" id="depositAmount" placeholder="0.00" min="1" step="0.01" required>
+                        </div>
+                        <div class="form-group">
+                            <label>Upload Payment Receipt</label>
+                            <div class="file-upload">
+                                <input type="file" id="receiptFile" accept="image/*" required>
+                                <p>Click to select receipt image (JPG, PNG)</p>
+                            </div>
+                        </div>
+                        <button type="submit" class="btn btn-primary">Submit Deposit Request</button>
+                    </form>
+                </div>
+
+                <div class="card">
+                    <h3>Deposit History</h3>
+                    <div id="depositHistory" class="history-list">
+                        <p class="empty-state">No deposits yet</p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Withdraw Page -->
+            <div id="withdrawPage" class="page">
+                <div class="page-header">
+                    <h1>Withdraw Funds</h1>
+                    <p>Request withdrawal to your bank account</p>
+                </div>
+
+                <div class="card form-card">
+                    <form id="withdrawForm">
+                        <div class="form-group">
+                            <label>Withdrawal Amount (USD)</label>
+                            <input type="number" id="withdrawAmount" placeholder="0.00" min="1" step="0.01" required>
+                            <small id="balanceWarning"></small>
+                        </div>
+
+                        <h3 style="margin-top: 30px;">Bank Account Information</h3>
+                        <div class="form-row">
+                            <div class="form-group">
+                                <label>Account Holder Name</label>
+                                <input type="text" id="accountHolderName" placeholder="Full name" required>
+                            </div>
+                            <div class="form-group">
+                                <label>Bank Name</label>
+                                <input type="text" id="bankName" placeholder="Bank name" required>
+                            </div>
+                        </div>
+
+                        <div class="form-row">
+                            <div class="form-group">
+                                <label>Account Number</label>
+                                <input type="text" id="bankAccountNumber" placeholder="Account number" required>
+                            </div>
+                            <div class="form-group">
+                                <label>IBAN</label>
+                                <input type="text" id="ibanNumber" placeholder="IBAN (optional)">
+                            </div>
+                        </div>
+
+                        <div class="form-group">
+                            <label>Card Number (optional)</label>
+                            <input type="text" id="cardNumber" placeholder="Card number">
+                        </div>
+
+                        <button type="submit" class="btn btn-primary">Submit Withdrawal Request</button>
+                    </form>
+                </div>
+
+                <div class="card">
+                    <h3>Withdrawal History</h3>
+                    <div id="withdrawHistory" class="history-list">
+                        <p class="empty-state">No withdrawals yet</p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Converter Page -->
+            <div id="converterPage" class="page">
+                <div class="page-header">
+                    <h1>Currency Converter</h1>
+                    <p>Real-time exchange rates updated every 60 seconds</p>
+                </div>
+
+                <div class="card form-card">
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label>From Currency</label>
+                            <select id="fromCurrency">
+                                <option value="USD">USD</option>
+                                <option value="EUR">EUR</option>
+                                <option value="AFN">AFN</option>
+                                <option value="PKR">PKR</option>
+                                <option value="IRR">IRR</option>
+                            </select>
+                        </div>
+                        <div class="form-group">
+                            <label>Amount</label>
+                            <input type="number" id="converterAmount" placeholder="1.00" min="0.01" step="0.01" value="1">
+                        </div>
+                        <div class="form-group">
+                            <label>To Currency</label>
+                            <select id="toCurrency">
+                                <option value="USD">USD</option>
+                                <option value="EUR">EUR</option>
+                                <option value="AFN">AFN</option>
+                                <option value="PKR">PKR</option>
+                                <option value="IRR">IRR</option>
+                            </select>
+                        </div>
+                    </div>
+
+                    <div class="conversion-result">
+                        <p><span id="converterAmountDisplay">1.00</span> <span id="fromCurrencyDisplay">USD</span> =</p>
+                        <h2 id="conversionResult">-</h2>
+                    </div>
+                </div>
+
+                <div class="card">
+                    <h3>Exchange Rates</h3>
+                    <div class="rates-grid" id="ratesGrid">
+                        <p class="empty-state">Loading rates...</p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Profile Page -->
+            <div id="profilePage" class="page">
+                <div class="page-header">
+                    <h1>My Profile</h1>
+                    <p>Manage your account information</p>
+                </div>
+
+                <div class="card">
+                    <h3>Personal Information</h3>
+                    <div class="info-grid">
+                        <div class="info-item">
+                            <label>First Name</label>
+                            <p id="profileFirstName">-</p>
+                        </div>
+                        <div class="info-item">
+                            <label>Last Name</label>
+                            <p id="profileLastName">-</p>
+                        </div>
+                        <div class="info-item">
+                            <label>Email</label>
+                            <p id="profileEmail">-</p>
+                        </div>
+                        <div class="info-item">
+                            <label>Mobile Number</label>
+                            <p id="profileMobile">-</p>
+                        </div>
+                        <div class="info-item">
+                            <label>Account Number</label>
+                            <p id="profileAccountNumber">-</p>
+                        </div>
+                        <div class="info-item">
+                            <label>Account Status</label>
+                            <p id="profileStatus">-</p>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="card">
+                    <h3>Transaction History</h3>
+                    <div id="allTransactions" class="transactions-list">
+                        <p class="empty-state">No transactions yet</p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Admin Panel Page -->
+            <div id="adminPage" class="page">
+                <div class="page-header">
+                    <h1>Admin Panel</h1>
+                    <p>Manage platform operations</p>
+                </div>
+
+                <div class="admin-tabs">
+                    <button class="admin-tab-btn active" data-admin-tab="users">Users</button>
+                    <button class="admin-tab-btn" data-admin-tab="deposits">Deposits</button>
+                    <button class="admin-tab-btn" data-admin-tab="withdrawals">Withdrawals</button>
+                    <button class="admin-tab-btn" data-admin-tab="transfers">Transfers</button>
+                    <button class="admin-tab-btn" data-admin-tab="exchanges">Exchange Offices</button>
+                    <button class="admin-tab-btn" data-admin-tab="rates">Exchange Rates</button>
+                </div>
+
+                <!-- Users Tab -->
+                <div id="usersTab" class="admin-tab-content active">
+                    <div class="card">
+                        <h3>User Management</h3>
+                        <div class="search-bar">
+                            <input type="text" id="userSearch" placeholder="Search users by name or email...">
+                            <button class="btn btn-small">Search</button>
+                        </div>
+                        <div id="usersList" class="admin-list">
+                            <p class="empty-state">Loading users...</p>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Deposits Tab -->
+                <div id="depositsTab" class="admin-tab-content">
+                    <div class="card">
+                        <h3>Deposit Requests</h3>
+                        <div id="depositsList" class="admin-list">
+                            <p class="empty-state">Loading deposits...</p>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Withdrawals Tab -->
+                <div id="withdrawalsTab" class="admin-tab-content">
+                    <div class="card">
+                        <h3>Withdrawal Requests</h3>
+                        <div id="withdrawalsList" class="admin-list">
+                            <p class="empty-state">Loading withdrawals...</p>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Transfers Tab -->
+                <div id="transfersTab" class="admin-tab-content">
+                    <div class="card">
+                        <h3>Transfer Requests</h3>
+                        <div id="transfersList" class="admin-list">
+                            <p class="empty-state">Loading transfers...</p>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Exchange Offices Tab -->
+                <div id="exchangesTab" class="admin-tab-content">
+                    <div class="card">
+                        <h3>Exchange Office Registrations</h3>
+                        <div id="exchangesList" class="admin-list">
+                            <p class="empty-state">Loading registrations...</p>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Exchange Rates Tab -->
+                <div id="ratesTab" class="admin-tab-content">
+                    <div class="card">
+                        <h3>Exchange Rate Management</h3>
+                        <div class="form-row">
+                            <div class="form-group">
+                                <label>Base Currency</label>
+                                <select id="rateBaseCurrency">
+                                    <option value="USD">USD</option>
+                                </select>
+                            </div>
+                            <div class="form-group">
+                                <label>Target Currency</label>
+                                <select id="rateTargetCurrency">
+                                    <option value="AFN">AFN</option>
+                                    <option value="PKR">PKR</option>
+                                    <option value="EUR">EUR</option>
+                                    <option value="IRR">IRR</option>
+                                </select>
+                            </div>
+                            <div class="form-group">
+                                <label>Rate</label>
+                                <input type="number" id="rateValue" placeholder="0.00" step="0.0001" required>
+                            </div>
+                            <button class="btn btn-primary">Update Rate</button>
+                        </div>
+                        <div id="ratesList" class="admin-list">
+                            <p class="empty-state">Loading rates...</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </main>
+    </div>
+
+    <!-- Notification Toast -->
+    <div id="toast" class="toast"></div>
+
+    <!-- Modal for Details -->
+    <div id="detailsModal" class="modal">
+        <div class="modal-content modal-lg">
+            <div class="modal-header">
+                <h2 id="modalTitle">Details</h2>
+                <button class="close-btn">&times;</button>
+            </div>
+            <div id="modalBody" class="modal-body">
+                <!-- Content loaded dynamically -->
+            </div>
+        </div>
+    </div>
+
+    <script src="app.js"></script>
+</body>
+</html>
